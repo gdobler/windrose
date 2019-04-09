@@ -219,27 +219,40 @@ class WindroseAxes(PolarAxes):
                 )
             return handles
 
-        def get_labels(decimal_places=1):
+        def get_labels(labels, decimal_places=1):
             _decimal_places = str(decimal_places)
 
-            fmt = "[%." + _decimal_places + "f " + ": %0." + _decimal_places + "f"
+            fmt = "[%." + _decimal_places + "f " + ": %0." + \
+                _decimal_places + "f"
 
-            labels = np.copy(self._info["bins"])
-            if locale.getlocale()[0] in ["fr_FR"]:
-                fmt += "["
+            if labels is None:
+                
+
+                labels = np.copy(self._info["bins"])
+                if locale.getlocale()[0] in ["fr_FR"]:
+                    fmt += "["
+                else:
+                    fmt += ")"
+
+                    labels = [fmt % (labels[i], labels[i + 1]) for i in 
+                              range(len(labels) - 1)]
+
             else:
-                fmt += ")"
+                if len(labels) != len(self._info['bins']) - 1:
+                    print("WARNING (GGD): length of labels must be the same "
+                          "as the number of bins!")
+                    return None
 
-            labels = [fmt % (labels[i], labels[i + 1]) for i in range(len(labels) - 1)]
+                labels = labels
+
             return labels
 
-        kwargs.pop("labels", None)
         kwargs.pop("handles", None)
 
         # decimal_places = kwargs.pop('decimal_places', 1)
 
         handles = get_handles()
-        labels = get_labels(decimal_places)
+        labels = get_labels(labels, decimal_places)
         self.legend_ = mpl.legend.Legend(self, handles, labels, loc, **kwargs)
         return self.legend_
 
