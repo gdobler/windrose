@@ -251,8 +251,9 @@ class WindroseAxes(PolarAxes):
 
         # decimal_places = kwargs.pop('decimal_places', 1)
 
+        labels_in = kwargs.pop('labels', None)
         handles = get_handles()
-        labels = get_labels(labels, decimal_places)
+        labels = get_labels(labels_in, decimal_places)
         self.legend_ = mpl.legend.Legend(self, handles, labels, loc, **kwargs)
         return self.legend_
 
